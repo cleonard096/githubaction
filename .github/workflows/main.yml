@@ -24,6 +24,15 @@ jobs:
         run: mvn clean install --file "./simple-api/pom.xml"
 
 
+      # Build and test your app with Maven and run SonarCloud analysis
+      - name: Build, test, and analyze with Maven
+        run: mvn -B verify sonar:sonar
+          -Dsonar.projectKey=cleonard096_githubaction
+          -Dsonar.organization=cleonard096
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
+
+
   # define job to build and publish docker image
   build-and-push-docker-image:
     needs: test-backend
@@ -75,6 +84,7 @@ jobs:
           tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-database:latest
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
+
 
 
       - name: Build image and push front
